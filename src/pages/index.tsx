@@ -14,6 +14,9 @@ import {
   CircularProgress,
   Switch,
   FormControlLabel,
+  AppBar,
+  Toolbar,
+  Link,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -129,160 +132,190 @@ export default function Home() {
       <Head>
         <title>SEO GPT</title>
       </Head>
-      <main className={`${inter.className}`}>
-        <Stack
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          spacing={2}
-          className="min-h-screen"
-        >
-          <div className="flex flex-row space-x-4 w-3/4 lg:w-1/2 xl:w-1/3">
-            <TextField
-              className="basis-1/3"
-              label="API Key"
-              value={apikey}
-              onChange={(e) => setApikey(e.target.value)}
-            />
-            <TextField
-              className="basis-1/3"
-              label="API Base"
-              value={apibase}
-              onChange={(e) => setApibase(e.target.value)}
-            />
-            <Autocomplete
-              className="basis-1/3"
-              options={["gpt-3.5-turbo", "gpt-4"]}
-              value={model}
-              onChange={(e, value) => setModel(value || "gpt-3.5-turbo")}
-              renderInput={(params) => (
-                <TextField {...params} label="GPT Model" />
-              )}
-            />
-          </div>
-          <TextField
-            className="w-3/4 lg:w-1/2 xl:w-1/3"
-            label="尾部信息"
-            value={footer}
-            onChange={(e) => setFooter(e.target.value)}
-            multiline
-            rows={2}
-          />
-          <TextField
-            className="w-3/4 lg:w-1/2 xl:w-1/3"
-            label="替换词表"
-            value={replaceWords}
-            onChange={(e) => setReplaceWords(e.target.value)}
-            multiline
-            rows={2}
-          />
-          <div className="flex flex-row space-x-4 w-3/4 lg:w-1/2 xl:w-1/3">
-            <TextField
-              className="basis-1/2"
-              label="关键词"
-              value={keywords}
-              onChange={(e) => setKeywords(e.target.value)}
-            />
-            <TextField
-              className="basis-1/6"
-              label="数量"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
-            <FormControlLabel
-              className="basis-1/6"
-              control={<Switch onChange={() => setToT(!toT)} />}
-              label={toT ? "繁体" : "简体"}
-            />
-            <Button className="basis-1/6" onClick={handleSubmit}>
-              提交
-            </Button>
-          </div>
-          {showAccordion && (
-            <div className="w-3/4 lg:w-1/2 xl:w-1/3">
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  {topicsLoading === "Loading" && (
-                    <CircularProgress size={20} className="mr-4" />
-                  )}
-                  {topicsLoading === "Done" && (
-                    <CheckCircleOutlineIcon className="mr-4" color="success" />
-                  )}
-                  {topicsLoading === "Error" && (
-                    <ErrorOutlineIcon className="mr-4" color="error" />
-                  )}
-                  <Typography>生成 SEO 文章主题</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TextField
-                    className="w-full"
-                    multiline
-                    rows={10}
-                    InputProps={{ readOnly: true }}
-                    value={topics}
-                  />
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  {contentLoading === "Loading" && (
-                    <CircularProgress size={20} className="mr-4" />
-                  )}
-                  {contentLoading === "Done" && (
-                    <CheckCircleOutlineIcon className="mr-4" color="success" />
-                  )}
-                  {contentLoading === "Error" && (
-                    <ErrorOutlineIcon className="mr-4" color="error" />
-                  )}
-                  <Typography>生成 SEO 文章内容</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TextField
-                    className="w-full"
-                    multiline
-                    rows={10}
-                    InputProps={{ readOnly: true }}
-                    value={content}
-                  />
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  {feedLoading === "Loading" && (
-                    <CircularProgress size={20} className="mr-4" />
-                  )}
-                  {feedLoading === "Done" && (
-                    <CheckCircleOutlineIcon className="mr-4" color="success" />
-                  )}
-                  {feedLoading === "Error" && (
-                    <ErrorOutlineIcon className="mr-4" color="error" />
-                  )}
-                  <Typography>生成 RSS Feed</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <TextField
-                    className="w-full"
-                    multiline
-                    rows={10}
-                    InputProps={{ readOnly: true }}
-                    value={feed}
-                  />
-                </AccordionDetails>
-              </Accordion>
-            </div>
-          )}
-          {generationDone && (
+      <div className="flex flex-col min-h-screen">
+        <AppBar position="static">
+          <Toolbar className="flex space-x-4">
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              SEO GPT
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <main className={`${inter.className} flex-1 flex`}>
+          <Stack
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={2}
+            className="flex-1"
+          >
             <div className="flex flex-row space-x-4 w-3/4 lg:w-1/2 xl:w-1/3">
-              <Button className="basis-1/2" onClick={handleSubmit}>
-                再次生成
-              </Button>
-              <Button className="basis-1/2" onClick={handleDownload}>
-                下载文件
+              <TextField
+                className="basis-1/3"
+                label="API Key"
+                value={apikey}
+                onChange={(e) => setApikey(e.target.value)}
+              />
+              <TextField
+                className="basis-1/3"
+                label="API Base"
+                value={apibase}
+                onChange={(e) => setApibase(e.target.value)}
+              />
+              <Autocomplete
+                className="basis-1/3"
+                options={["gpt-3.5-turbo", "gpt-4"]}
+                value={model}
+                onChange={(e, value) => setModel(value || "gpt-3.5-turbo")}
+                renderInput={(params) => (
+                  <TextField {...params} label="GPT Model" />
+                )}
+              />
+            </div>
+            <TextField
+              className="w-3/4 lg:w-1/2 xl:w-1/3"
+              label="尾部信息"
+              value={footer}
+              onChange={(e) => setFooter(e.target.value)}
+              multiline
+              rows={2}
+            />
+            <TextField
+              className="w-3/4 lg:w-1/2 xl:w-1/3"
+              label="替换词表"
+              value={replaceWords}
+              onChange={(e) => setReplaceWords(e.target.value)}
+              multiline
+              rows={2}
+            />
+            <div className="flex flex-row space-x-4 w-3/4 lg:w-1/2 xl:w-1/3">
+              <TextField
+                className="basis-1/2"
+                label="关键词"
+                value={keywords}
+                onChange={(e) => setKeywords(e.target.value)}
+              />
+              <TextField
+                className="basis-1/6"
+                label="数量"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+              <FormControlLabel
+                className="basis-1/6"
+                control={<Switch onChange={() => setToT(!toT)} />}
+                label={toT ? "繁体" : "简体"}
+              />
+              <Button className="basis-1/6" onClick={handleSubmit}>
+                提交
               </Button>
             </div>
-          )}
-        </Stack>
-      </main>
+            {showAccordion && (
+              <div className="w-3/4 lg:w-1/2 xl:w-1/3">
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    {topicsLoading === "Loading" && (
+                      <CircularProgress size={20} className="mr-4" />
+                    )}
+                    {topicsLoading === "Done" && (
+                      <CheckCircleOutlineIcon className="mr-4" color="success" />
+                    )}
+                    {topicsLoading === "Error" && (
+                      <ErrorOutlineIcon className="mr-4" color="error" />
+                    )}
+                    <Typography>生成 SEO 文章主题</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <TextField
+                      className="w-full"
+                      multiline
+                      rows={10}
+                      InputProps={{ readOnly: true }}
+                      value={topics}
+                    />
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    {contentLoading === "Loading" && (
+                      <CircularProgress size={20} className="mr-4" />
+                    )}
+                    {contentLoading === "Done" && (
+                      <CheckCircleOutlineIcon className="mr-4" color="success" />
+                    )}
+                    {contentLoading === "Error" && (
+                      <ErrorOutlineIcon className="mr-4" color="error" />
+                    )}
+                    <Typography>生成 SEO 文章内容</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <TextField
+                      className="w-full"
+                      multiline
+                      rows={10}
+                      InputProps={{ readOnly: true }}
+                      value={content}
+                    />
+                  </AccordionDetails>
+                </Accordion>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    {feedLoading === "Loading" && (
+                      <CircularProgress size={20} className="mr-4" />
+                    )}
+                    {feedLoading === "Done" && (
+                      <CheckCircleOutlineIcon className="mr-4" color="success" />
+                    )}
+                    {feedLoading === "Error" && (
+                      <ErrorOutlineIcon className="mr-4" color="error" />
+                    )}
+                    <Typography>生成 RSS Feed</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <TextField
+                      className="w-full"
+                      multiline
+                      rows={10}
+                      InputProps={{ readOnly: true }}
+                      value={feed}
+                    />
+                  </AccordionDetails>
+                </Accordion>
+              </div>
+            )}
+            {generationDone && (
+              <div className="flex flex-row space-x-4 w-3/4 lg:w-1/2 xl:w-1/3">
+                <Button className="basis-1/2" onClick={handleSubmit}>
+                  再次生成
+                </Button>
+                <Button className="basis-1/2" onClick={handleDownload}>
+                  下载文件
+                </Button>
+              </div>
+            )}
+          </Stack>
+        </main>
+        <footer className="py-4 mt-8">
+          <div className="container mx-auto text-center">
+            <Typography variant="body2" color="text.secondary" align="center">
+              © 2019 – 2023 <Link href="https://www.mirrorange.com/" className="mx-2" target="_blank">一只咕橘子</Link> All rights reserved.
+            </Typography>
+          </div>
+        </footer>
+      </div>
     </>
   );
 }
